@@ -1,0 +1,19 @@
+#!/bin/sh
+
+git config --global core.quotepath false
+
+function ok () {
+    echo -e "\033[0;32mOK  \033[0;39m: $1"
+}
+
+function ng () {
+    echo -e "\033[0;31mNG  \033[0;39m: $1"
+}
+
+function warn () {
+    echo -e "\033[0;33mWARN\033[0;39m: $1"
+}
+
+function logExec () {
+    echo -e "\033[0;35mEXEC\033[0;39m: $1"
+}
