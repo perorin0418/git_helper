@@ -17,3 +17,10 @@ function warn () {
 function logExec () {
     echo -e "\033[0;35mEXEC\033[0;39m: $1"
 }
+
+function errorEnd () {
+    echo "########################################"
+    echo "# 終了します。"
+    echo "########################################"
+    exit 1
+}
