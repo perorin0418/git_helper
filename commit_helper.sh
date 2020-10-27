@@ -140,9 +140,12 @@ echo "########################################"
 echo "# リモートリポジトリの修正をローカルリポジトリに取り込み"
 echo "########################################"
 logExec 'git merge --ff-only FETCH_HEAD'
-mergeFetch=`git merge --ff-only FETCH_HEAD`
 git merge --ff-only FETCH_HEAD
-
+if [ $? -ne 0 ]; then
+    ng "ローカルリポジトリへの取り込みに失敗しました。"
+    ng "Gitに詳しい人に確認してください。"
+    errorEnd
+fi
 
 echo
 echo "########################################"
