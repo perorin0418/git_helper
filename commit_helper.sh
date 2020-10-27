@@ -163,5 +163,9 @@ done
 echo "コミットします。"
 logExec "git commit -m $comment"
 git commit -m $comment
-
+if [ $? -ne 0 ]; then
+    ng "コミットに失敗しました。"
+    ng "Gitに詳しい人に確認してください。"
+    errorEnd
+fi
 
