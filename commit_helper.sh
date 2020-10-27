@@ -24,8 +24,11 @@ branchName=`git symbolic-ref --short HEAD`
 echo
 echo "あなたが見ているブランチは [ $branchName ] です。"
 echo "あなたは [ $branchName ] にコミットしようとしています。"
-yn=""; read -r -p "間違いはありませんか？ (Y/N): " yn
-case "$yn" in [yY]*) ;; *) errorEnd ;; esac
+while :
+do
+    yn=""; read -r -p "間違いはありませんか？ (Y/N): " yn
+    case "$yn" in [yY]*) break ;; [nN]*) errorEnd ;; *) continue ;; esac
+done
 
 echo
 step "########################################"
@@ -47,7 +50,7 @@ else
     while :
     do
         yn=""; read -r -p "バックアップしましたか？ (Y/N): " yn
-        case "$yn" in [yY]*) break ;; *) continue ;; esac
+        case "$yn" in [yY]*) break ;; [nN]*) errorEnd ;; *) continue ;; esac
     done
 fi
 
@@ -69,8 +72,11 @@ else
     git status -uall
     echo
     echo "変更しているファイルを一旦、全て初期化します。"
-    yn=""; read -r -p "よろしいですか？ (Y/N): " yn
-    case "$yn" in [yY]*) ;; *) errorEnd ;; esac
+    while :
+    do
+        yn=""; read -r -p "よろしいですか？ (Y/N): " yn
+        case "$yn" in [yY]*) break ;; [nN]*) errorEnd ;; *) continue ;; esac
+    done
 
     echo
     echo "＜ワークツリーを初期化＞"
@@ -94,8 +100,11 @@ if [ ! -z "$repDif" ]; then
     git log origin/$branchName..$branchName
     echo
     echo "プッシュされていないコミットを全て削除します。"
-    yn=""; read -r -p "よろしいですか？ (Y/N): " yn
-    case "$yn" in [yY]*) ;; *) errorEnd ;; esac
+    while :
+    do
+        yn=""; read -r -p "よろしいですか？ (Y/N): " yn
+        case "$yn" in [yY]*) break ;; [nN]*) errorEnd ;; *) continue ;; esac
+    done
 
     echo
     echo "＜プッシュされていないコミットを全て削除＞"
@@ -109,9 +118,9 @@ echo
 step "########################################"
 step "# コミット対象ファイルのステージング"
 step "########################################"
+echo "手動でバックアップしたコミット対象ファイルを格納してください。"
 while :
 do
-    echo "手動でバックアップしたコミット対象ファイルを格納してください。"
     yn=""; read -r -p "格納しましたか？ (Y/N): " yn
     case "$yn" in [yY]*) break ;; *) continue ;; esac
 done
@@ -129,8 +138,11 @@ else
     echo
     git status -s -uall
     echo
-    yn=""; read -r -p "間違いないですか？ (Y/N): " yn
-    case "$yn" in [yY]*) ;; *) errorEnd ;; esac
+    while :
+    do
+        yn=""; read -r -p "間違いないですか？ (Y/N): " yn
+        case "$yn" in [yY]*) break ;; [nN]*) errorEnd ;; *) continue ;; esac
+    done
     echo "ステージングします。"
     logExec 'git add -A'
     git add -A
@@ -172,12 +184,12 @@ while :
 do
     comment=""; read -r -p "コミットコメントを入力してください: " comment
     echo
-    echo "**************************************"
+    echo "======================================"
     echo "$comment"
-    echo "**************************************"
+    echo "======================================"
     echo
     yn=""; read -r -p "コミットコメントに間違いはないですか？ (Y/N): " yn
-    case "$yn" in [yY]*) break ;; *) continue ;; esac
+    case "$yn" in [yY]*) break ;; [nN]*) continue ;; *) continue ;; esac
 done
 echo "コミットします。"
 logExec "git commit -m \"$comment\""
