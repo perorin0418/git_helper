@@ -44,7 +44,11 @@ else
     echo
     git status -s -uall
     echo
-    yn=""; read -r -p "バックアップしたらEnterキーを押下：" yn
+    while :
+    do
+        yn=""; read -r -p "バックアップしましたか？ (Y/N): " yn
+        case "$yn" in [yY]*) break ;; *) continue ;; esac
+    done
 fi
 
 echo
@@ -105,8 +109,12 @@ echo
 echo "########################################"
 echo "# コミット対象ファイルのステージング"
 echo "########################################"
-echo "手動でバックアップしたコミット対象ファイルを格納してください。"
-yn=""; read -r -p "格納したらEnterキーを押下：" yn
+while :
+do
+    echo "手動でバックアップしたコミット対象ファイルを格納してください。"
+    yn=""; read -r -p "格納しましたか？ (Y/N): " yn
+    case "$yn" in [yY]*) break ;; *) continue ;; esac
+done
 gitSts=`git status -s`
 if [ -z "$gitSts" ]; then
     ng "ワークツリーはクリーンです。"
@@ -161,8 +169,8 @@ do
     case "$yn" in [yY]*) break ;; *) continue ;; esac
 done
 echo "コミットします。"
-logExec "git commit -m $comment"
-git commit -m $comment
+logExec "git commit -m \"$comment\""
+git commit -m "$comment"
 if [ $? -ne 0 ]; then
     ng "コミットに失敗しました。"
     ng "Gitに詳しい人に確認してください。"
