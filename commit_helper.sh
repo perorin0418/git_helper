@@ -17,13 +17,46 @@ fi
 
 echo
 echo "########################################"
+echo "# ブランチの確認"
+echo "########################################"
+logExec 'git symbolic-ref --short HEAD'
+branchName=`git symbolic-ref --short HEAD`
+echo
+echo "あなたが見ているブランチは「$branchName」です。"
+echo "あなたは「$branchName」にコミットしようとしています。"
+yn=""; read -r -p "間違いはありませんか？ (Y/N): " yn
+case "$yn" in [yY]*) ;; *) echo ; exit 1 ;; esac
+
+echo
+echo "########################################"
+echo "# コミット対象の確認"
+echo "########################################"
+gitSts=`git status -s`
+if [ -z "$gitSts" ]; then
+    ng "ワークツリーはクリーンです。"
+    ng "コミットすべき対象がありません。"
+    exit 1
+else
+    echo "以下のファイルorフォルダーからコミット対象を手動でバックアップしてください。"
+    logExec 'git status -s'
+    git status -s
+fi
+
+
+
+
+
+echo
+echo "########################################"
 echo "# ワークツリーの状態確認"
 echo "########################################"
 gitSts=`git status -s`
 if [ -z "$gitSts" ]; then
-    ok "ワークツリーはクリーンです。"
+    ng "ワークツリーはクリーンです。"
+    ng "コミットすべき対象がありません。"
+    exit 1
 else
-    warn "ワークツリーはクリーンではありません。"
+    ok "ワークツリーはクリーンではありません。"
     echo
     echo "＜ワークツリーの状態を出力＞"
     logExec 'git status'
@@ -46,7 +79,6 @@ echo
 echo "########################################"
 echo "# ローカルリポジトリとリモートリポジトリの状態比較"
 echo "########################################"
-branchName=`git symbolic-ref --short HEAD`
 repDif=`git log origin/$branchName..$branchName`
 if [ ! -z "$repDif" ]; then
     warn "プッシュしていないコミットがあります。"
